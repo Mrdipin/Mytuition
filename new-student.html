@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="ne">
+<head>
+  <meta charset="UTF-8" />
+  <title>🎓 MyTuition - विद्यार्थी</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(to right, #ffe4e1, #e0ffff, #f0fff0);
+      padding: 30px;
+    }
+    h2 {
+      text-align: center;
+      color: #2c3e50;
+      margin-bottom: 20px;
+      background: linear-gradient(to right, #ff8a00, #e52e71);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      font-weight: bold;
+    }
+    .tabs {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 20px;
+    }
+    .tab {
+      padding: 10px 20px;
+      margin: 0 5px;
+      border-radius: 12px;
+      cursor: pointer;
+      background: linear-gradient(to right, #89f7fe, #66a6ff);
+      color: #2c3e50;
+      font-weight: bold;
+      transition: 0.3s;
+    }
+    .tab:hover {
+      background: linear-gradient(to right, #fbc2eb, #a6c1ee);
+    }
+    .tab.active {
+      background: linear-gradient(to right, #f7971e, #ffd200);
+      color: white;
+    }
+    .section {
+      display: none;
+      max-width: 900px;
+      margin: auto;
+    }
+    .section.active {
+      display: block;
+    }
+    form {
+      background: linear-gradient(135deg, #fdfcfb, #e2d1c3);
+      padding: 25px;
+      border-radius: 20px;
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+    }
+    input[type="text"], input[type="number"], input[type="file"], select {
+      width: 100%;
+      padding: 10px;
+      margin: 10px 0;
+      border: 1px solid #ccc;
+      border-radius: 10px;
+      font-size: 16px;
+      background: #f5f7fa;
+    }
+    button {
+      width: 100%;
+      padding: 14px;
+      background: linear-gradient(to right, #43e97b, #38f9d7);
+      color: white;
+      border: none;
+      border-radius: 12px;
+      font-size: 17px;
+      cursor: pointer;
+      font-weight: bold;
+      transition: 0.3s;
+    }
+    button:hover {
+      background: linear-gradient(to right, #ff0844, #ffb199);
+    }
+    .print-btn {
+      margin: 10px 0;
+      background: linear-gradient(to right, #667eea, #764ba2);
+    }
+     .table-wrapper {  
+      overflow-x: auto;  
+    }  
+    table {  
+      width: 100%;  
+      border-collapse: collapse;  
+      margin-top: 10px;  
+    }  
+    th, td {  
+      border: 1px solid #aaa;  
+      padding: 7px;  
+      text-align: center;  
+      white-space: nowrap;  
+      vertical-align: middle;  
+    }  
+    th {  
+      background-color: #f1f1f1;  
+    }  
+    td input {  
+      width: auto;  
+      min-width: 200px;  
+      max-width: 180px;  
+      padding: 10px;  
+      border-radius: 5px;  
+      border: 1px solid #ccc;  
+      text-align: center;  
+    }
+    .back-btn {
+      display: inline-block;
+      margin-top: 30px;
+      text-decoration: none;
+      font-weight: bold;
+      padding: 10px 20px;
+      background: linear-gradient(to right, #ff5f6d, #ffc371);
+      color: white;
+      border-radius: 30px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+      transition: 0.3s;
+    }
+    .back-btn:hover {
+      background: linear-gradient(to right, #2193b0, #6dd5ed);
+    }
+    .thumb-img {
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      cursor: pointer;
+      object-fit: cover;
+      border: 2px solid #00c6ff;
+    }
+    #imgModal {
+      display: none;
+      position: fixed;
+      z-index: 1000;
+      padding-top: 60px;
+      left: 0; top: 0; width: 100%; height: 100%;
+      overflow: auto;
+      background-color: rgba(0,0,0,0.8);
+    }
+    #imgModal img {
+      margin: auto;
+      display: block;
+      max-width: 90%;
+      max-height: 80vh;
+      border-radius: 12px;
+    }
+    #imgModal span.closeBtn {
+      position: absolute;
+      top: 20px;
+      right: 35px;
+      color: #fff;
+      font-size: 40px;
+      font-weight: bold;
+      cursor: pointer;
+      user-select: none;
+    }
+  </style>
+
+  <!-- EmailJS CDN -->
+  <script src="https://cdn.emailjs.com/dist/email.min.js"></script>
+  <script>
+    (function(){
+      emailjs.init("fmUaXrZdVTOuNPqLU");
+    })();
+  </script>
+</head>
+<body>
+  <h2>🎓 विद्यार्थी व्यवस्थापन</h2>
+
+  <div class="tabs">
+    <div class="tab active" onclick="showTab('admission')">➕ भर्ना</div>
+    <div class="tab" onclick="showTab('list')">📄 सूची</div>
+  </div>
+
+  <!-- Admission Form -->
+  <div class="section active" id="admission">
+    <form onsubmit="submitForm(event)">
+      <input type="text" id="fullName" placeholder="👤 पूरा नाम" required>
+      <input type="text" id="phone" placeholder="📞 फोन (optional)">
+      <input type="text" id="address" placeholder="🏠 ठेगाना" required>
+      <select id="gender" required>
+        <option value="">👫 लिंग चयन गर्नुहोस्</option>
+        <option value="पुरुष">👦 पुरुष</option>
+        <option value="महिला">👧 महिला</option>
+        <option value="अन्य">⚧ अन्य</option>
+      </select>
+      <input type="number" id="monthlyFee" placeholder="💸 मासिक शुल्क (रु)" required>
+      <input type="text" id="admissionDate" placeholder="📅 भर्ना मिति" required>
+      <input type="file" id="studentImage" accept="image/*">
+      <img id="previewImg" style="display:none; width:100px; height:100px; border-radius:12px; object-fit:cover;" />
+      <progress id="uploadProgress" value="0" max="100" style="width:100%; display:none;"></progress>
+      <button type="submit">📥 विद्यार्थी थप्नुहोस्</button>
+    </form>
+  </div>
+
+  <!-- Student List -->
+  <div class="section" id="list">
+    <input type="text" id="searchInput" placeholder="🔍 विद्यार्थी खोज्नुहोस्..." onkeyup="searchStudents()" style="width:100%; padding:10px; font-size:16px; margin-bottom:10px; border-radius:8px; border:1px solid #ccc;" />
+    <button class="print-btn" onclick="printStudentList()">🖨️ प्रिन्ट गर्नुहोस्</button>
+    <div class="table-wrapper">
+      <table id="studentTable">
+        <thead>
+          <tr>
+            <th>क्रम संख्या</th>
+            <th>फोटो</th>
+            <th>नाम</th>
+            <th>फोन</th>
+            <th>ठेगाना</th>
+            <th>लिंग</th>
+            <th>शुल्क</th>
+            <th>मिति</th>
+            <th>💾</th>
+            <th>🗑️</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </div>
+
+  <div style="text-align:center;">
+    <a href="dashboard.html" class="back-btn">← ड्यासबोर्ड फर्कनुहोस्</a>
+  </div>
+
+  <!-- Image Modal -->
+  <div id="imgModal">
+    <span class="closeBtn" onclick="closeModal()">&times;</span>
+    <img id="modalImg" alt="Profile Picture" />
+  </div>
+
+  <!-- Firebase Scripts -->
+  <script src="https://www.gstatic.com/firebasejs/10.5.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.5.0/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.5.0/firebase-storage-compat.js"></script>
+
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyCfW5RGnApAZLhsjVkkphsdG9moIj44ugU",
+      authDomain: "mytuition-e48a3.firebaseapp.com",
+      projectId: "mytuition-e48a3",
+      storageBucket: "mytuition-e48a3.appspot.com",
+      messagingSenderId: "278641988463",
+      appId: "1:278641988463:web:e43309b072c7287a968e9a"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+    const storage = firebase.storage();
+
+    function submitForm(e) {
+      e.preventDefault();
+      const fullName = document.getElementById('fullName').value.trim();
+      const phone = document.getElementById('phone').value.trim();
+      const address = document.getElementById('address').value.trim();
+      const gender = document.getElementById('gender').value;
+      const monthlyFee = document.getElementById('monthlyFee').value;
+      const admissionDate = document.getElementById('admissionDate').value.trim();
+      const imageFile = document.getElementById('studentImage').files[0];
+
+      if (imageFile) {
+        const fileName = `${Date.now()}_${imageFile.name}`;
+        const imageRef = storage.ref(`students/${fileName}`);
+        const uploadTask = imageRef.put(imageFile);
+        document.getElementById('uploadProgress').style.display = "block";
+
+        uploadTask.on('state_changed',
+          (snapshot) => {
+            const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+            document.getElementById('uploadProgress').value = progress;
+          },
+          (error) => {
+            alert("❌ फोटो अपलोड त्रुटि: " + error.message);
+          },
+          () => {
+            uploadTask.snapshot.ref.getDownloadURL().then((downloadURL) => {
+              saveStudent(fullName, phone, address, gender, monthlyFee, admissionDate, downloadURL, `students/${fileName}`);
+            });
+          }
+        );
+      } else {
+        saveStudent(fullName, phone, address, gender, monthlyFee, admissionDate, null, null);
+      }
+    }
+
+    function saveStudent(fullName, phone, address, gender, monthlyFee, admissionDate, imageURL, imagePath) {
+      db.collection("students").add({
+        fullName,
+        phone,
+        address,
+        gender,
+        monthlyFee,
+        admissionDate,
+        imageURL: imageURL || null,
+        imagePath: imagePath || null,
+        createdAt: new Date()
+      }).then(() => {
+        alert("✅ विद्यार्थी सफलतापूर्वक थपियो!");
+        document.querySelector("form").reset();
+        document.getElementById("previewImg").style.display = "none";
+        document.getElementById("uploadProgress").style.display = "none";
+        showTab('list');
+        loadStudents();
+        emailjs.send("service_3as2g6b", "template_qw5xoeh", {
+          to_email: "dipinkumarmahara353@gmail.com",
+          full_name: fullName,
+          phone: phone || "N/A",
+          address: address,
+          gender: gender,
+          monthly_fee: monthlyFee,
+          admission_date: admissionDate
+        });
+      }).catch(error => alert("❌ त्रुटि: " + error.message));
+    }
+
+    function loadStudents() {
+      db.collection("students").orderBy("createdAt", "desc").get().then(snapshot => {
+        const tableBody = document.querySelector("#studentTable tbody");
+        tableBody.innerHTML = "";
+        let sn = 1;
+        snapshot.forEach(doc => {
+          const data = doc.data();
+          const row = document.createElement("tr");
+          row.innerHTML = `
+            <td>${sn++}</td>
+            <td><img src="${data.imageURL || 'https://via.placeholder.com/50x50.png?text=👤'}" class="thumb-img" onclick="openModal('${data.imageURL || ''}')"/></td>
+            <td><input value="${data.fullName}" class="edit-name"/></td>
+            <td><input value="${data.phone || ''}" class="edit-phone"/></td>
+            <td><input value="${data.address}" class="edit-address"/></td>
+            <td><input value="${data.gender}" class="edit-gender"/></td>
+            <td><input type="number" value="${data.monthlyFee}" class="edit-fee"/></td>
+            <td><input value="${data.admissionDate}" class="edit-date"/></td>
+            <td><button onclick="updateStudent('${doc.id}', this)">💾</button></td>
+            <td><button onclick="deleteStudent('${doc.id}')">🗑️</button></td>
+          `;
+          tableBody.appendChild(row);
+        });
+      });
+    }
+
+    function updateStudent(id, btn) {
+      const row = btn.closest('tr');
+      const fullName = row.querySelector('.edit-name').value.trim();
+      const phone = row.querySelector('.edit-phone').value.trim();
+      const address = row.querySelector('.edit-address').value.trim();
+      const gender = row.querySelector('.edit-gender').value;
+      const monthlyFee = row.querySelector('.edit-fee').value;
+      const admissionDate = row.querySelector('.edit-date').value.trim();
+      db.collection("students").doc(id).update({
+        fullName, phone, address, gender, monthlyFee, admissionDate
+      }).then(() => {
+        alert("✅ अपडेट सफल!");
+        loadStudents();
+      });
+    }
+
+    function deleteStudent(id) {
+      if (confirm("के तपाईं पक्का यो विद्यार्थी हटाउन चाहनुहुन्छ?")) {
+        db.collection("students").doc(id).get().then(doc => {
+          const imagePath = doc.data().imagePath;
+          db.collection("students").doc(id).delete().then(() => {
+            if (imagePath) {
+              storage.ref(imagePath).delete().catch(err => console.warn("Image delete failed:", err.message));
+            }
+            alert("🗑️ विद्यार्थी हटाइयो!");
+            loadStudents();
+          });
+        });
+      }
+    }
+
+    function printStudentList() {
+      const content = document.getElementById("studentTable").outerHTML;
+      const w = window.open();
+      w.document.write(`<html><head><title>Print</title><style>table{width:100%;border-collapse:collapse;}th,td{border:1px solid #000;padding:8px;text-align:center;}</style></head><body>${content}</body></html>`);
+      w.document.close();
+      w.print();
+    }
+
+    function searchStudents() {
+      const searchValue = document.getElementById("searchInput").value.toLowerCase();
+      document.querySelectorAll("#studentTable tbody tr").forEach(row => {
+        const inputs = row.querySelectorAll("input");
+        let match = false;
+        inputs.forEach(input => {
+          if (input.value.toLowerCase().includes(searchValue)) {
+            match = true;
+          }
+        });
+        row.style.display = match ? "" : "none";
+      });
+    }
+
+    function showTab(id) {
+      document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+      document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+      document.getElementById(id).classList.add('active');
+      document.querySelector(`.tab[onclick="showTab('${id}')"]`).classList.add('active');
+      if (id === 'list') loadStudents();
+    }
+
+    function openModal(src) {
+      document.getElementById('imgModal').style.display = "block";
+      document.getElementById('modalImg').src = src;
+    }
+
+    function closeModal() {
+      document.getElementById('imgModal').style.display = "none";
+    }
+
+    document.getElementById("studentImage").addEventListener("change", function () {
+      const file = this.files[0];
+      const reader = new FileReader();
+      reader.onload = function (e) {
+        const previewImg = document.getElementById("previewImg");
+        previewImg.src = e.target.result;
+        previewImg.style.display = "block";
+      };
+      if (file) reader.readAsDataURL(file);
+    });
+
+    window.onload = loadStudents;
+  </script>
+</body>
+</html>

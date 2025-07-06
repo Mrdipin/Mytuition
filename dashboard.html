@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="ne">
+<head>
+  <meta charset="UTF-8" />
+  <title>MyTuition Dashboard</title>
+  <style>
+    /* FONT + BASE */
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      color: #333;
+      transition: background 0.3s, color 0.3s;
+      background: linear-gradient(-45deg, #fdfbfb, #ebedee, #c9d6ff, #e2e2e2);
+      background-size: 400% 400%;
+      animation: bodyGradient 15s ease infinite;
+    }
+    body.dark-mode {
+      background: linear-gradient(to right, #1f1c2c, #928dab);
+      color: #f0f0f0;
+    }
+
+    @keyframes bodyGradient {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    /* HEADER */
+    header {
+      background: linear-gradient(270deg, #2193b0, #6dd5ed, #2193b0);
+      background-size: 600% 600%;
+      animation: headerAnim 10s ease infinite;
+      color: white;
+      padding: 10px;
+      text-align: center;
+      font-size: 26px;
+      font-weight: bold;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+      position: relative;
+    }
+
+    @keyframes headerAnim {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    #welcomeText {
+      animation: rainbowText 3s infinite;
+    }
+
+    @keyframes rainbowText {
+      0% { color: red; }
+      20% { color: orange; }
+      40% { color: yellow; }
+      60% { color: green; }
+      80% { color: blue; }
+      100% { color: violet; }
+    }
+
+    /* BUTTONS */
+    #logoutBtn, #langToggle, #darkModeToggle {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      padding: 6px 12px;
+      font-size: 14px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: 0.3s;
+      color: white;
+    }
+
+    #logoutBtn {
+      right: 20px;
+      background-color: #ff4e50;
+    }
+
+    #langToggle {
+      left: 20px;
+      background-color: #2ecc71;
+    }
+
+    #darkModeToggle {
+      left: 80px;
+      background-color: #f39c12;
+      animation: colorPulse 4s infinite;
+    }
+
+    @keyframes colorPulse {
+      0% { background-color: #f39c12; }
+      50% { background-color: #e67e22; }
+      100% { background-color: #f39c12; }
+    }
+
+    /* NAVIGATION */
+    nav.topnav {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      background: linear-gradient(to right, #ff9966, #ff5e62);
+      padding: 5px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+    }
+
+    nav.topnav a {
+      text-decoration: none;
+      color: white;
+      font-weight: bold;
+      padding: 10px 20px;
+      margin: 5px;
+      background: linear-gradient(45deg, #00c6ff, #0072ff);
+      border-radius: 30px;
+      transition: background 0.3s;
+    }
+
+    nav.topnav a:hover {
+      background: linear-gradient(45deg, #7b4397, #dc2430);
+    }
+
+    main {
+      padding: 30px;
+      text-align: center;
+    }
+
+    .search-container {
+      margin-top: 30px;
+    }
+
+    #searchInput {
+      padding: 10px;
+      width: 60%;
+      max-width: 400px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      font-size: 16px;
+    }
+
+    #searchBtn {
+      padding: 10px 20px;
+      background: linear-gradient(90deg, #56ab2f, #a8e063);
+      color: black;
+      border: none;
+      border-radius: 8px;
+      margin-left: 10px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    #summaryBox {
+      margin-top: 20px;
+      padding: 20px;
+      background: linear-gradient(to bottom, #ffe259, #ffa751);
+      border-radius: 10px;
+      max-width: 600px;
+      margin-left: auto;
+      margin-right: auto;
+      box-shadow: 0 0 10px rgba(0,0,0,0.2);
+      color: #2c3e50;
+    }
+
+    #summaryBox h3 {
+      margin-bottom: 15px;
+    }
+
+    #searchResult > div {
+      background: linear-gradient(45deg, #89f7fe, #66a6ff);
+      color: #111;
+      padding: 20px;
+      margin: 20px auto;
+      border-radius: 12px;
+      max-width: 600px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+      text-align: left;
+    }
+
+    #searchResult button {
+      background-color: #6a11cb;
+      background-image: linear-gradient(315deg, #6a11cb 0%, #2575fc 74%);
+      border: none;
+      color: white;
+      padding: 6px 14px;
+      margin-right: 10px;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    /* FOOTER MARQUEE */
+    .footer-marquee {
+      width: 100%;
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      padding: 14px 0;
+      background: linear-gradient(270deg, #ff6a00, #ee0979, #00c9ff, #92fe9d);
+      background-size: 600% 600%;
+      animation: bgColorFlow 10s ease infinite;
+      overflow: hidden;
+      z-index: 999;
+    }
+
+    .footer-marquee span {
+      display: inline-block;
+      padding-left: 100%;
+      animation: scrollText 15s linear infinite;
+      white-space: nowrap;
+      font-size: 18px;
+      font-weight: bold;
+      color: #fff;
+      text-shadow: 1px 1px 2px #000;
+    }
+
+    @keyframes scrollText {
+      0% { transform: translateX(0%); }
+      100% { transform: translateX(-100%); }
+    }
+
+    @keyframes bgColorFlow {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+  </style>
+</head>
+
+<body>
+  <header>
+    <button id="langToggle">EN</button>
+    <button id="darkModeToggle">🌙</button>
+    <span id="welcomeText">WELCOM~DIPINSIR</span>
+    <button id="logoutBtn">Logout</button>
+  </header>
+
+  <nav class="topnav">
+    <a href="new-student.html" id="navStudent">👨‍🎓 विद्यार्थी व्यवस्थापन</a>
+    <a href="attendance.html" id="navAttendance">📅हाजिरी व्यवस्थापन प्रणाली</a>
+    <a href="fee.html" id="navFee">💰 शुल्क व्यवस्थापन प्रणाली</a>
+    <a href="notification.html" id="navNotification">🔔 सूचना</a>
+  </nav>
+
+  <main>
+    <h2 id="dashboardTitle">ड्यासबोर्ड विवरण</h2>
+    <div class="search-container">
+      <input type="text" id="searchInput" placeholder="🔍 विद्यार्थीको नाम खोज्नुहोस्" />
+      <button id="searchBtn" onclick="handleSearch()">खोज्नुहोस्</button>
+    </div>
+
+    <div id="summaryBox">
+      <h3 id="summaryTitle">📊 सारांश</h3>
+      <p id="totalStudents">👨‍🎓 कुल विद्यार्थी: ...</p>
+      <p id="presentToday">✅ आजको उपस्थिति: ...</p>
+      <p id="unpaidFees">💸 बाकी शुल्क: ...</p>
+    </div>
+
+    <div id="searchResult"></div>
+  </main>
+
+  <div class="footer-marquee">
+    <span>👋 स्वागत छ ~ WELCOM~DIPINSIR ~ MyTuition Dashboard मा ! 🎓📚</span>
+  </div>
+<script src="https://cdn.jsdelivr.net/npm/emailjs-com@2/dist/email.min.js"></script>
+  <script>
+    (function(){
+      emailjs.init("fmUaXrZdVTOuNPqLU"); // 👉 यहाँ आफ्नो EmailJS public key राख्नू
+    })();
+  </script>
+  <!-- Firebase -->
+  <script src="https://www.gstatic.com/firebasejs/10.5.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.5.0/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.5.0/firebase-auth-compat.js"></script>
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyCfW5RGnApAZLhsjVkkphsdG9moIj44ugU",
+      authDomain: "mytuition-e48a3.firebaseapp.com",
+      projectId: "mytuition-e48a3",
+      storageBucket: "mytuition-e48a3.appspot.com",
+      messagingSenderId: "278641988463",
+      appId: "1:278641988463:web:e43309b072c7287a968e9a"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+
+    firebase.auth().onAuthStateChanged(user => {
+      if (!user) window.location.href = "login.html";
+    });
+
+    document.getElementById('logoutBtn').addEventListener('click', () => {
+      firebase.auth().signOut().then(() => {
+        alert("Logout सफल भयो।");
+        window.location.href = "login.html";
+      }).catch((error) => {
+        alert("Logout गर्दा समस्या आयो: " + error.message);
+      });
+    });
+
+    const darkModeToggle = document.getElementById('darkModeToggle');
+    if (localStorage.getItem('darkMode') === 'enabled') {
+      document.body.classList.add('dark-mode');
+      darkModeToggle.textContent = '🌞';
+    }
+    darkModeToggle.addEventListener('click', () => {
+      document.body.classList.toggle('dark-mode');
+      const isDark = document.body.classList.contains('dark-mode');
+      darkModeToggle.textContent = isDark ? '🌞' : '🌙';
+      localStorage.setItem('darkMode', isDark ? 'enabled' : 'disabled');
+    });
+
+    const summaryText = {
+      NE: {
+        summary: '📊 सारांश',
+        total: '👨‍🎓 कुल विद्यार्थी: ',
+        present: '✅ आजको उपस्थिति: ',
+        unpaid: '💸 बाकी शुल्क: ',
+      },
+      EN: {
+        summary: '📊 Summary',
+        total: '👨‍🎓 Total Students: ',
+        present: '✅ Present Today: ',
+        unpaid: '💸 Unpaid Fees: ',
+      }
+    };
+
+    const langToggleBtn = document.getElementById("langToggle");
+    let currentLang = localStorage.getItem('language') || 'NE';
+
+    function updateLanguage(lang) {
+      const text = summaryText[lang];
+      document.getElementById('summaryTitle').innerText = text.summary;
+      document.getElementById('dashboardTitle').innerText = (lang === 'EN') ? "Dashboard Overview" : "ड्यासबोर्ड विवरण";
+      document.getElementById('searchInput').placeholder = (lang === 'EN') ? "🔍 Search student by name" : "🔍 विद्यार्थीको नाम खोज्नुहोस्";
+      document.getElementById('searchBtn').innerText = (lang === 'EN') ? "Search" : "खोज्नुहोस्";
+      document.getElementById('navStudent').innerText = (lang === 'EN') ? "👨‍🎓 Student Management" : "👨‍🎓 विद्यार्थी व्यवस्थापन";
+      document.getElementById('navAttendance').innerText = (lang === 'EN') ? "📅 Attendance System" : "📅हाजिरी व्यवस्थापन प्रणाली";
+      document.getElementById('navFee').innerText = (lang === 'EN') ? "💰 Fee Management" : "💰 शुल्क व्यवस्थापन प्रणाली";
+      document.getElementById('navNotification').innerText = (lang === 'EN') ? "🔔 Notifications" : "🔔 सूचना";
+      langToggleBtn.innerText = (lang === 'EN') ? "NE" : "EN";
+      localStorage.setItem('language', lang);
+      loadSummary();
+    }
+
+    langToggleBtn.addEventListener('click', () => {
+      currentLang = (currentLang === 'NE') ? 'EN' : 'NE';
+      updateLanguage(currentLang);
+    });
+    updateLanguage(currentLang);
+
+    function loadSummary() {
+      const text = summaryText[currentLang];
+      db.collection("students").get().then(snapshot => {
+        document.getElementById("totalStudents").innerText = text.total + snapshot.size;
+
+        const today = new Date().toISOString().split('T')[0];
+        db.collection("attendance").where("date", "==", today).where("status", "==", "Present").get()
+          .then(att => {
+            document.getElementById("presentToday").innerText = text.present + att.size;
+          }).catch(() => {
+            document.getElementById("presentToday").innerText = text.present + "N/A";
+          });
+
+        db.collection("fee").where("status", "==", "Unpaid").get()
+          .then(unpaid => {
+            document.getElementById("unpaidFees").innerText = text.unpaid + unpaid.size;
+          }).catch(() => {
+            document.getElementById("unpaidFees").innerText = text.unpaid + "N/A";
+          });
+      }).catch(err => {
+        document.getElementById("totalStudents").innerText = "त्रुटि: " + err.message;
+      });
+    }
+
+    function handleSearch() {
+      const query = document.getElementById("searchInput").value.trim().toLowerCase();
+      const resultDiv = document.getElementById("searchResult");
+      resultDiv.innerHTML = "";
+
+      if (!query) {
+        alert(currentLang === 'EN' ? "Please enter student name." : "कृपया विद्यार्थीको नाम लेख्नुहोस्।");
+        return;
+      }
+
+      db.collection("students").get().then(snapshot => {
+        let found = false;
+        snapshot.forEach(doc => {
+          const data = doc.data();
+          const name = (data.fullName || "").toLowerCase();
+          if (name.includes(query)) {
+            found = true;
+            sendNotification("🔍 विद्यार्थी खोजियो", `तपाईंले '${data.fullName}' नामको विद्यार्थी खोज्नुभयो।`);
+
+            const cardId = `studentCard_${doc.id}`;
+            resultDiv.innerHTML += `
+              <div id="${cardId}">
+                <h3>👤 ${data.fullName || "नाम छैन"}</h3>
+                <p>📞 फोन: ${data.phone || "N/A"}</p>
+                <p>🏫ठेगाना: ${data.grade || "N/A"}</p>
+                <p>💸 मासिक शुल्क: ${data.monthlyFee || "N/A"}</p>
+                <p>📅 : ${data.dob || "N/A"}</p>
+                <p>📌 स्थिति: ${data.status || "N/A"}</p>
+                ${data.photoURL ? `<img src="${data.photoURL}" alt="विद्यार्थी फोटो" style="width:100px;border-radius:10px;margin-top:10px;" />` : ''}
+                <div style="margin-top: 20px;">
+                  <button onclick="editStudent('${doc.id}')">✏️ ${currentLang === 'EN' ? 'Edit' : 'सम्पादन'}</button>
+                  <button onclick="printCard('${cardId}')">🖨️ ${currentLang === 'EN' ? 'Print' : 'प्रिन्ट'}</button>
+                </div>
+              </div>
+            `;
+          }
+        });
+        if (!found) {
+          resultDiv.innerHTML = `<p style="color:red;">${currentLang === 'EN' ? '❌ Student not found.' : '❌ विद्यार्थी भेटिएन।'}</p>`;
+        }
+      }).catch(err => {
+        resultDiv.innerHTML = `<p style="color:red;">🔥 ${currentLang === 'EN' ? 'Search failed:' : 'खोज्न सकिएन:'} ${err.message}</p>`;
+      });
+    }
+
+    function sendNotification(title, message) {
+      db.collection("notifications").add({
+        title: title,
+        message: message,
+        timestamp: firebase.firestore.FieldValue.serverTimestamp()
+      });
+      emailjs.send("service_3as2g6b", "template_qw5xoeh", {
+        to_email: "dipinkumarmahara353@gmail.com",
+        subject: title,
+        message: message
+      });
+    }
+
+    function printCard(cardId) {
+      const content = document.getElementById(cardId).innerHTML;
+      const win = window.open('', '', 'height=700,width=900');
+      win.document.write('<html><head><title>विद्यार्थी विवरण</title>');
+      win.document.write('<style>body{font-family:Arial;padding:30px;} h3{font-size:24px;} p{font-size:18px;} img{margin-top:10px;}</style>');
+      win.document.write('</head><body>');
+      win.document.write(content);
+      win.document.close();
+      win.print();
+    }
+
+    function editStudent(studentId) {
+      window.location.href = `edit-student.html?id=${studentId}`;
+    }
+  </script>
+</body>
+</html>(

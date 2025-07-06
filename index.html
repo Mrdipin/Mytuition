@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="ne">
+<head>
+  <meta charset="UTF-8" />
+  <title>MyTuition - Login</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;700;900&display=swap');
+
+    /* Background gradient animation */
+    body {
+      margin: 0;
+      font-family: 'Poppins', sans-serif;
+      height: 100vh;
+      background: linear-gradient(270deg, #ff4e50, #f9d423, #24c6dc, #514a9d, #ff6a00, #2193b0);
+      background-size: 1200% 1200%;
+      animation: bgColorShift 30s ease infinite;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      overflow: hidden;
+      text-align: center;
+      padding: 20px;
+      position: relative; /* Important for absolute balloons */
+    }
+
+    @keyframes bgColorShift {
+      0% {background-position: 0% 50%;}
+      50% {background-position: 100% 50%;}
+      100% {background-position: 0% 50%;}
+    }
+
+    /* Title text white color */
+    h2 {
+      font-weight: 900;
+      font-size: 2rem;
+      color: white;
+      text-shadow: 0 0 8px rgba(0,0,0,0.6);
+      letter-spacing: 1.5px;
+      margin: 0 0 20px 0;
+      user-select: none;
+      z-index: 10;
+      position: relative;
+    }
+
+    /* Input fields with animated border and shadow */
+    input[type="email"], input[type="password"] {
+      width: 320px;
+      max-width: 90vw;
+      padding: 14px 20px;
+      margin: 10px auto;
+      border: 3px solid transparent;
+      border-radius: 12px;
+      font-size: 1.1rem;
+      outline: none;
+      background: rgba(255 255 255 / 0.15);
+      color: white;
+      font-weight: 600;
+      transition: border 0.4s ease, box-shadow 0.4s ease;
+      box-shadow: 0 0 10px rgba(255 255 255 / 0.2);
+      text-align: center;
+      position: relative;
+      z-index: 10;
+    }
+    input[type="email"]::placeholder,
+    input[type="password"]::placeholder {
+      color: rgba(255 255 255 / 0.7);
+      font-weight: 400;
+      font-size: 1rem;
+      transition: color 0.3s ease;
+    }
+    input[type="email"]:focus,
+    input[type="password"]:focus {
+      border: 3px solid #ff6a00;
+      box-shadow: 0 0 15px #ff6a00;
+      background: rgba(255 255 255 / 0.3);
+    }
+    input[type="email"]:focus::placeholder,
+    input[type="password"]:focus::placeholder {
+      color: white;
+      opacity: 0.8;
+    }
+
+    /* Button with glowing rainbow animation */
+    button {
+      width: 320px;
+      max-width: 90vw;
+      margin-top: 15px;
+      padding: 14px 0;
+      font-size: 1.3rem;
+      font-weight: 700;
+      border: none;
+      border-radius: 14px;
+      cursor: pointer;
+      background: linear-gradient(270deg, #ff004d, #ff7700, #ffee00, #00ff77, #0099ff, #7700ff, #ff00aa);
+      background-size: 600% 600%;
+      color: white;
+      box-shadow: 0 0 8px #ff004d;
+      animation: rainbowBtn 6s ease infinite;
+      transition: transform 0.2s ease, background-position 0.3s ease;
+      user-select: none;
+      position: relative;
+      z-index: 10;
+    }
+    button:hover {
+      transform: scale(1.05);
+      box-shadow: 0 0 25px #ff004d;
+      background-position: 100% 50%;
+    }
+    @keyframes rainbowBtn {
+      0% {background-position: 0% 50%;}
+      50% {background-position: 100% 50%;}
+      100% {background-position: 0% 50%;}
+    }
+
+    /* Forgot password link style */
+    a {
+      margin-top: 15px;
+      color: #fff;
+      text-decoration: underline;
+      font-weight: 600;
+      cursor: pointer;
+      font-size: 1rem;
+      user-select: none;
+      transition: color 0.3s ease;
+      display: inline-block;
+      position: relative;
+      z-index: 10;
+    }
+    a:hover {
+      color: #ff6a00;
+    }
+
+    /* Message text styling */
+    #message {
+      margin-top: 20px;
+      font-weight: 700;
+      font-size: 1.1rem;
+      min-height: 24px;
+      user-select: none;
+      text-shadow: 0 0 6px rgba(0,0,0,0.4);
+      position: relative;
+      z-index: 10;
+    }
+
+    /* Responsive for smaller screens */
+    @media (max-width: 400px) {
+      h2 {
+        font-size: 1.6rem;
+      }
+      input, button {
+        width: 90vw;
+      }
+    }
+
+    /* Balloon & Flowers container */
+    .animation-container {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      pointer-events: none;
+      overflow: hidden;
+      z-index: 1;
+    }
+
+    /* Balloon style */
+    .balloon {
+      position: absolute;
+      bottom: -150px;
+      width: 50px;
+      height: 70px;
+      background: radial-gradient(circle at 50% 40%, #ff4e50, #d13232);
+      border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+      filter: drop-shadow(0 2px 2px rgba(0,0,0,0.15));
+      animation-name: floatUp;
+      animation-timing-function: ease-in-out;
+      animation-iteration-count: infinite;
+      animation-direction: alternate;
+      opacity: 0.8;
+      box-shadow: 0 0 8px rgba(255, 78, 80, 0.8);
+    }
+    /* Balloon string */
+    .balloon::after {
+      content: '';
+      position: absolute;
+      bottom: -25px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 2px;
+      height: 25px;
+      background: #d13232;
+      border-radius: 1px;
+      filter: drop-shadow(0 1px 1px rgba(0,0,0,0.1));
+    }
+
+    /* Different balloon colors */
+    .balloon.red {
+      background: radial-gradient(circle at 50% 40%, #ff4e50, #d13232);
+      box-shadow: 0 0 8px rgba(255, 78, 80, 0.8);
+    }
+    .balloon.blue {
+      background: radial-gradient(circle at 50% 40%, #2193b0, #17607c);
+      box-shadow: 0 0 8px rgba(33, 147, 176, 0.8);
+    }
+    .balloon.yellow {
+      background: radial-gradient(circle at 50% 40%, #ffdd40, #c7b328);
+      box-shadow: 0 0 8px rgba(255, 221, 64, 0.8);
+    }
+    .balloon.purple {
+      background: radial-gradient(circle at 50% 40%, #a64ca6, #732673);
+      box-shadow: 0 0 8px rgba(166, 76, 166, 0.8);
+    }
+
+    /* Balloon float animation */
+    @keyframes floatUp {
+      0% {
+        transform: translateY(0) translateX(0);
+        opacity: 0.8;
+      }
+      100% {
+        transform: translateY(-110vh) translateX(15px);
+        opacity: 0;
+      }
+    }
+
+    /* Flowers style */
+    .flower {
+      position: absolute;
+      bottom: -60px;
+      width: 30px;
+      height: 30px;
+      background: radial-gradient(circle at 50% 50%, #ff69b4 40%, #c71585 90%);
+      border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+      filter: drop-shadow(0 1px 1px rgba(0,0,0,0.1));
+      animation-name: riseFlower;
+      animation-timing-function: ease-in-out;
+      animation-iteration-count: infinite;
+      opacity: 0.9;
+      box-shadow: 0 0 6px rgba(255, 105, 180, 0.7);
+    }
+    .flower::before,
+    .flower::after {
+      content: "";
+      position: absolute;
+      background: radial-gradient(circle at 50% 50%, #ff69b4 70%, #c71585 90%);
+      border-radius: 50%;
+      width: 15px;
+      height: 15px;
+      top: 50%;
+      left: 50%;
+      transform-origin: center center;
+      filter: drop-shadow(0 1px 1px rgba(0,0,0,0.1));
+    }
+    .flower::before {
+      transform: translate(-150%, -50%);
+    }
+    .flower::after {
+      transform: translate(50%, -150%);
+    }
+
+    /* Flower float animation */
+    @keyframes riseFlower {
+      0% {
+        transform: translateY(0) translateX(0);
+        opacity: 0.9;
+      }
+      100% {
+        transform: translateY(-90vh) translateX(-10px);
+        opacity: 0;
+      }
+    }
+  </style>
+</head>
+<body>
+  <h2>MyTuition - Login</h2>
+
+  <input type="email" id="email" placeholder="📧 Email" autocomplete="username" />
+  <input type="password" id="password" placeholder="🔒 Password" autocomplete="current-password" />
+  <button onclick="login()">🔓 Login</button>
+  <a href="#" onclick="forgotPassword()">Forgot Password?</a>
+
+  <p id="message"></p>
+
+  <!-- Balloon and Flowers Animation Container -->
+  <div class="animation-container" aria-hidden="true">
+    <!-- Balloons -->
+    <div class="balloon red" style="left: 5%; animation-duration: 18s; animation-delay: 0s;"></div>
+    <div class="balloon blue" style="left: 25%; animation-duration: 22s; animation-delay: 4s;"></div>
+    <div class="balloon yellow" style="left: 45%; animation-duration: 20s; animation-delay: 2s;"></div>
+    <div class="balloon purple" style="left: 65%; animation-duration: 24s; animation-delay: 5s;"></div>
+    <div class="balloon red" style="left: 85%; animation-duration: 19s; animation-delay: 1s;"></div>
+
+    <!-- Flowers -->
+    <div class="flower" style="left: 15%; animation-duration: 16s; animation-delay: 3s;"></div>
+    <div class="flower" style="left: 35%; animation-duration: 20s; animation-delay: 1s;"></div>
+    <div class="flower" style="left: 55%; animation-duration: 18s; animation-delay: 4s;"></div>
+    <div class="flower" style="left: 75%; animation-duration: 22s; animation-delay: 0s;"></div>
+    <div class="flower" style="left: 90%; animation-duration: 19s; animation-delay: 2s;"></div>
+  </div>
+
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/10.5.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.5.0/firebase-auth-compat.js"></script>
+
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyCfW5RGnApAZLhsjVkkphsdG9moIj44ugU",
+      authDomain: "mytuition-e48a3.firebaseapp.com",
+      projectId: "mytuition-e48a3",
+      storageBucket: "mytuition-e48a3.appspot.com",
+      messagingSenderId: "278641988463",
+      appId: "1:278641988463:web:e43309b072c7287a968e9a",
+      measurementId: "G-CS8NFMHF81"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+
+    function login() {
+      const email = document.getElementById('email').value.trim();
+      const password = document.getElementById('password').value;
+
+      if (!email || !password) {
+        showMessage("❌ Email र Password दुवै आवश्यक छ।", "red");
+        return;
+      }
+
+      firebase.auth().signInWithEmailAndPassword(email, password)
+        .then(userCredential => {
+          showMessage("✅ Login Success!", "limegreen");
+          setTimeout(() => {
+            window.location.href = "dashboard.html";
+          }, 1000);
+        })
+        .catch(error => {
+          const errorCode = error.code;
+          if (errorCode === 'auth/network-request-failed') {
+            showMessage("❌ No Network Connection — कृपया आफ्नो इन्टरनेट जाँच गर्नुहोस्।", "red");
+          } else if (errorCode === 'auth/user-not-found') {
+            showMessage("❌ प्रयोगकर्ता भेटिएन।", "red");
+          } else if (errorCode === 'auth/wrong-password') {
+            showMessage("❌ पासवर्ड गलत छ।", "red");
+          } else if (errorCode === 'auth/invalid-email') {
+            showMessage("❌ अमान्य Email ठेगाना।", "red");
+          } else {
+            showMessage("❌ Login Failed: " + error.message, "red");
+          }
+        });
+    }
+
+    function forgotPassword() {
+      const email = document.getElementById('email').value.trim();
+      if (!email) {
+        alert("कृपया Email लेख्नुहोस्");
+        return;
+      }
+
+      firebase.auth().sendPasswordResetEmail(email)
+        .then(() => {
+          alert("📩 Reset email पठाइएको छ");
+        })
+        .catch(error => {
+          alert("❌ Error: " + error.message);
+        });
+    }
+
+    function showMessage(msg, color) {
+      const messageElem = document.getElementById('message');
+      messageElem.style.color = color;
+      messageElem.textContent = msg;
+    }
+  </script>
+</body>
+</html>

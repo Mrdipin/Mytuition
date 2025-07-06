@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="ne">
+<head>
+  <meta charset="UTF-8" />
+  <title>📅 मासिक शुल्क प्रणाली</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    body { 
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #fffbf0, #d7f3e3);
+      padding: 20px; 
+      margin: 0;
+      min-height: 100vh;
+      user-select: none;
+    }
+    h2 { 
+      text-align: center; 
+      margin-bottom: 25px;
+      color: #4a148c;
+      font-weight: 900;
+      text-shadow: 1px 1px 2px #c39bd3;
+    }
+    .tabs { 
+      display: flex; 
+      justify-content: center; 
+      gap: 15px; 
+      flex-wrap: wrap; 
+      margin-bottom: 30px; 
+    }
+    .tabs button {
+      padding: 12px 28px;
+      border: none;
+      border-radius: 30px;
+      font-weight: 700;
+      color: white;
+      cursor: pointer;
+      box-shadow: 0 3px 8px rgba(0,0,0,0.15);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      user-select: none;
+    }
+    .tabs button:nth-child(1) {
+      background: linear-gradient(45deg, #ff6a00, #ee0979);
+    }
+    .tabs button:nth-child(2) {
+      background: linear-gradient(45deg, #00c6ff, #0072ff);
+    }
+    .tabs button:nth-child(3) {
+      background: linear-gradient(45deg, #ffb347, #ffcc33);
+      color: #4a4a4a;
+      font-weight: 800;
+      box-shadow: 0 3px 8px rgba(255,179,71,0.5);
+    }
+    .tabs button:nth-child(4) {
+      background: linear-gradient(45deg, #8e2de2, #4a00e0);
+    }
+    .tabs button:hover {
+      transform: scale(1.1);
+      box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+      opacity: 0.9;
+    }
+    .tabs button.active {
+      box-shadow: 0 0 20px 5px rgba(255,255,255,0.7);
+      transform: scale(1.15);
+      opacity: 1;
+    }
+    .tab-content {
+      display: none;
+      max-width: 1000px;
+      margin: auto;
+      background: #fff;
+      padding: 30px 35px;
+      border-radius: 20px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+      user-select: text;
+    }
+    .tab-content.active {
+      display: block;
+    }
+    input, select {
+      width: 100%;
+      padding: 14px;
+      margin: 15px 0;
+      border-radius: 10px;
+      border: 2px solid #ddd;
+      box-sizing: border-box;
+      font-size: 16px;
+      font-weight: 600;
+      color: #444;
+      transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    }
+    input:focus, select:focus {
+      border-color: #ff6a00;
+      box-shadow: 0 0 10px #ff6a00aa;
+      outline: none;
+    }
+    .btn {
+      padding: 14px 36px;
+      margin: 15px 0 0 0;
+      border-radius: 40px;
+      border: none;
+      cursor: pointer;
+      font-weight: 800;
+      font-size: 18px;
+      color: white;
+      background: linear-gradient(45deg, #00c6ff, #0072ff);
+      box-shadow: 0 6px 15px rgba(0,114,255,0.7);
+      transition: background 0.4s ease, transform 0.3s ease;
+      user-select: none;
+    }
+    .btn:hover {
+      background: linear-gradient(45deg, #0072ff, #00c6ff);
+      transform: scale(1.05);
+    }
+    ul#dueList {
+      list-style: none;
+      padding-left: 0;
+      font-size: 18px;
+      line-height: 1.7;
+      font-weight: 700;
+      color: #b71c1c;
+      user-select: text;
+    }
+    ul#dueList li {
+      padding: 8px 0;
+      border-bottom: 1px dashed #b71c1c;
+    }
+    ul#dueList li:last-child {
+      border-bottom: none;
+    }
+    ul#dueList li.success {
+      color: #2e7d32;
+      border-color: #2e7d32;
+    }
+    .table-wrapper {
+      width: 100%;
+      overflow-x: auto;
+      border-radius: 15px;
+      padding: 4px;
+      background: linear-gradient(270deg, red, orange, yellow, green, blue, indigo, violet, red);
+      background-size: 1400% 1400%;
+      animation: rainbowGlow 15s ease infinite;
+      margin-top: 10px;
+      box-sizing: border-box;
+    }
+    table {
+      width: 100%;
+      min-width: 700px;
+      border-collapse: separate;
+      border-spacing: 0;
+      border-radius: 12px;
+      background: white;
+      user-select: text;
+    }
+    thead tr {
+      background: linear-gradient(90deg, #ff6a00, #ee0979);
+      color: white;
+      font-weight: 700;
+      font-size: 16px;
+    }
+    th, td {
+      padding: 14px 22px;
+      text-align: left;
+      font-size: 15px;
+      color: #333;
+      border-bottom: 1px solid #eee;
+    }
+    tbody tr:nth-child(odd) {
+      background: #fff7f0;
+    }
+    tbody tr:nth-child(even) {
+      background: #fff0f6;
+    }
+    tbody tr:hover {
+      background-color: #ffd6d6;
+      transition: background-color 0.3s ease;
+    }
+    button.print-btn {
+      background: linear-gradient(45deg, #28a745, #218838);
+      border-radius: 12px;
+      padding: 8px 18px;
+      font-size: 17px;
+      border: none;
+      cursor: pointer;
+      color: white;
+      font-weight: 700;
+      box-shadow: 0 4px 12px rgba(33,136,56,0.7);
+    }
+    button.print-btn:hover {
+      background: linear-gradient(45deg, #218838, #28a745);
+      transform: scale(1.1);
+    }
+    @keyframes rainbowGlow {
+      0% { background-position: 0% 50%; box-shadow: 0 0 15px 3px red; }
+      50% { background-position: 100% 50%; box-shadow: 0 0 20px 6px violet; }
+      100% { background-position: 0% 50%; box-shadow: 0 0 15px 3px red; }
+    }
+    .back-btn {
+      display: block;
+      text-align: center;
+      margin: 40px auto 0;
+      font-size: 18px;
+      font-weight: bold;
+      text-decoration: none;
+      color: #4a148c;
+      padding: 12px 24px;
+      border-radius: 25px;
+      background: linear-gradient(45deg, #ff9a9e, #fad0c4);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      width: fit-content;
+    }
+    .back-btn:hover {
+      transform: scale(1.05);
+      box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+    }
+    @media (max-width: 768px) {
+      table { min-width: 700px; }
+      .tabs button { flex: 1 1 45%; margin-bottom: 10px; }
+    }
+  </style>
+</head>
+<body>
+
+<h2>💰️ मासिक शुल्क व्यवस्थापन</h2>
+
+<div class="tabs">
+  <button class="active" onclick="showTab('entryTab', event)">➕ शुल्क प्रविष्टि</button>
+  <button onclick="showTab('reportTab', event)">📅 मासिक रिपोर्ट</button>
+  <button onclick="showTab('dueTab', event)">⚠ बाँकी महिनाहरू</button>
+  <button onclick="showTab('historyTab', event)">💳 Payment History</button>
+</div>
+
+<div id="entryTab" class="tab-content active">
+  <form id="feeForm" onsubmit="addMonthlyFee(event)">
+    <input id="studentName" placeholder="👨‍🎓 विद्यार्थीको नाम" required />
+    <select id="month" required>
+      <option value="">📅 महिना छान्नुहोस्</option>
+      <option>२०८२-०१</option><option>२०८२-०२</option><option>२०८२-०३</option>
+      <option>२०८२-०४</option><option>२०८२-०५</option><option>२०८२-०६</option>
+      <option>२०८२-०७</option><option>२०८२-०८</option><option>२०८२-०९</option>
+      <option>२०८२-१०</option><option>२०८२-११</option><option>२०८२-१२</option>
+    </select>
+    <input id="amount" type="number" placeholder="💵 रकम (रु)" min="0" required />
+    <input id="payer" placeholder="💳 तिर्ने व्यक्ति" required />
+    <input id="feeDate" placeholder="📅 तिरेको मिति (वि.सं)" required />
+    <input id="description" placeholder="📝 विवरण (optional)" />
+    <button type="submit" class="btn">✅ सेव गर्नुहोस्</button>
+  </form>
+</div>
+
+<div id="reportTab" class="tab-content">
+  <select id="reportStudent" onchange="loadMonthlyReport()">
+    <option value="">👨‍🎓 विद्यार्थी छान्नुहोस्</option>
+  </select>
+  <div class="table-wrapper">
+    <table>
+      <thead>
+        <tr>
+          <th>महिना</th><th>रकम</th><th>तिर्ने व्यक्ति</th><th>मिति</th><th>विवरण</th><th>रसिद</th>
+        </tr>
+      </thead>
+      <tbody id="reportTableBody"></tbody>
+    </table>
+  </div>
+</div>
+
+<div id="dueTab" class="tab-content">
+  <select id="dueStudent" onchange="showDueMonths()">
+    <option value="">👨‍🎓 विद्यार्थी छान्नुहोस्</option>
+  </select>
+  <ul id="dueList"></ul>
+</div>
+
+<div id="historyTab" class="tab-content">
+  <select id="historyStudent" onchange="loadPaymentHistory()">
+    <option value="">👨‍🎓 विद्यार्थी छान्नुहोस्</option>
+  </select>
+  <div class="table-wrapper">
+    <table>
+      <thead>
+        <tr>
+          <th>महिना</th><th>रकम</th><th>तिर्ने व्यक्ति</th><th>मिति</th><th>विवरण</th><th>स्थिति</th><th>रसिद</th>
+        </tr>
+      </thead>
+      <tbody id="historyTableBody"></tbody>
+    </table>
+  </div>
+</div>
+
+<a href="dashboard.html" class="back-btn">← ड्यासबोर्ड फर्कनुहोस्</a>
+
+<script src="https://www.gstatic.com/firebasejs/10.5.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.5.0/firebase-firestore-compat.js"></script>
+<script>
+  // Firebase config
+  const firebaseConfig = {
+    apiKey: "AIzaSyCfW5RGnApAZLhsjVkkphsdG9moIj44ugU",
+    authDomain: "mytuition-e48a3.firebaseapp.com",
+    projectId: "mytuition-e48a3",
+    storageBucket: "mytuition-e48a3.appspot.com",
+    messagingSenderId: "278641988463",
+    appId: "1:278641988463:web:e43309b072c7287a968e9a"
+  };
+  firebase.initializeApp(firebaseConfig);
+  const db = firebase.firestore();
+
+  // Tab switching
+  function showTab(id, evt) {
+    document.querySelectorAll('.tab-content').forEach(div => div.classList.remove('active'));
+    document.querySelectorAll('.tabs button').forEach(btn => btn.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+    evt.target.classList.add('active');
+    if (id === 'reportTab' || id === 'dueTab' || id === 'historyTab') loadStudentList();
+  }
+
+  let cachedStudents = null;
+
+  // Load student list for dropdowns
+  function loadStudentList() {
+    if (cachedStudents) {
+      fillStudentSelects(cachedStudents);
+      return;
+    }
+    db.collection("fees").get().then(snapshot => {
+      const students = new Set();
+      snapshot.forEach(doc => students.add(doc.data().name));
+      cachedStudents = Array.from(students);
+      fillStudentSelects(cachedStudents);
+    });
+  }
+
+  function fillStudentSelects(students) {
+    const reportSel = document.getElementById("reportStudent");
+    const dueSel = document.getElementById("dueStudent");
+    const historySel = document.getElementById("historyStudent");
+    reportSel.innerHTML = `<option value="">छान्नुहोस्</option>`;
+    dueSel.innerHTML = `<option value="">छान्नुहोस्</option>`;
+    historySel.innerHTML = `<option value="">छान्नुहोस्</option>`;
+    students.forEach(name => {
+      reportSel.innerHTML += `<option value="${name}">${name}</option>`;
+      dueSel.innerHTML += `<option value="${name}">${name}</option>`;
+      historySel.innerHTML += `<option value="${name}">${name}</option>`;
+    });
+  }
+
+  // Add monthly fee entry
+  function addMonthlyFee(e) {
+    e.preventDefault();
+    const name = document.getElementById("studentName").value.trim();
+    const month = document.getElementById("month").value;
+    const amount = Number(document.getElementById("amount").value);
+    const payer = document.getElementById("payer").value.trim();
+    const feeDate = document.getElementById("feeDate").value.trim();
+    const description = document.getElementById("description").value;
+
+    if (!name || !month || !amount || !payer || !feeDate) {
+      alert("सबै विवरण भर्नुहोस्");
+      return;
+    }
+
+    // Check duplicate payment for same student-month
+    db.collection("fees")
+      .where("name", "==", name)
+      .where("month", "==", month)
+      .get()
+      .then(snapshot => {
+        if (!snapshot.empty) {
+          alert(`${name} को ${month} को शुल्क पहिले नै थप भइसकेको छ।`);
+          return;
+        }
+        db.collection("fees").add({
+          name, month, amount, payer, feeDate, description,
+          status: "Paid", createdAt: firebase.firestore.Timestamp.now()
+        }).then(() => {
+          alert("✅ शुल्क थपियो");
+          document.getElementById("feeForm").reset();
+          cachedStudents = null; // Reset cache so student list reloads updated
+        }).catch(err => alert("त्रुटि: " + err.message));
+      }).catch(err => alert("त्रुटि: " + err.message));
+  }
+
+  // Load monthly report for a student
+  function loadMonthlyReport() {
+    const student = document.getElementById("reportStudent").value;
+    const tbody = document.getElementById("reportTableBody");
+    tbody.innerHTML = "";
+    if (!student) return;
+    db.collection("fees").where("name", "==", student).get().then(snapshot => {
+      if (snapshot.empty) {
+        tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; color:#777;">कोई रेकर्ड छैन</td></tr>`;
+        return;
+      }
+      snapshot.forEach(doc => {
+        const d = doc.data();
+        tbody.innerHTML += `
+          <tr>
+            <td>${d.month}</td>
+            <td>रू ${d.amount}</td>
+            <td>${d.payer}</td>
+            <td>${d.feeDate}</td>
+            <td>${d.description || ""}</td>
+            <td><button class="btn print-btn" onclick="printReceipt('${d.name}','${d.month}','${d.amount}','${d.payer}','${d.feeDate}')">🖨</button></td>
+          </tr>`;
+      });
+    });
+  }
+
+  // Show due months for a student
+  function showDueMonths() {
+    const student = document.getElementById("dueStudent").value;
+    const allMonths = [
+      "२०८२-०१","२०८२-०२","२०८२-०३","२०८२-०४","२०८२-०५","२०८२-०६",
+      "२०८२-०७","२०८२-०८","२०८२-०९","२०८२-१०","२०८२-११","२०८२-१२"
+    ];
+    if (!student) {
+      document.getElementById("dueList").innerHTML = "";
+      return;
+    }
+    db.collection("fees").where("name", "==", student).get().then(snapshot => {
+      const paid = new Set();
+      snapshot.forEach(doc => paid.add(doc.data().month));
+      const due = allMonths.filter(m => !paid.has(m));
+      document.getElementById("dueList").innerHTML = due.length
+        ? due.map(m => `<li>❌ ${m} शुल्क बाँकी</li>`).join("")
+        : "<li style='color:green;'>✅ कुनै शुल्क बाँकी छैन</li>";
+    });
+  }
+
+  // Load payment history with auto sum
+  function loadPaymentHistory() {
+    const student = document.getElementById("historyStudent").value;
+    const tbody = document.getElementById("historyTableBody");
+    tbody.innerHTML = "";
+    if (!student) return;
+
+    db.collection("fees")
+      .where("name", "==", student)
+      .orderBy("createdAt", "desc")
+      .get()
+      .then(snapshot => {
+        if (snapshot.empty) {
+          tbody.innerHTML = `<tr><td colspan="7" style="text-align:center; color:#777;">कोई रेकर्ड छैन</td></tr>`;
+          return;
+        }
+
+        let totalAmount = 0;  // जम्मा रकम
+
+        snapshot.forEach(doc => {
+          const d = doc.data();
+          totalAmount += Number(d.amount) || 0;
+
+          tbody.innerHTML += `
+            <tr>
+              <td>${d.month}</td>
+              <td>रू ${d.amount}</td>
+              <td>${d.payer}</td>
+              <td>${d.feeDate}</td>
+              <td>${d.description || ""}</td>
+              <td>${d.status || "Unknown"}</td>
+              <td><button class="btn print-btn" onclick="printReceipt('${d.name}','${d.month}','${d.amount}','${d.payer}','${d.feeDate}')">🖨</button></td>
+            </tr>`;
+        });
+
+        // Show total amount row
+        tbody.innerHTML += `
+          <tr style="background:#f8f9f9; font-weight:bold;">
+            <td colspan="6" style="text-align:right;">💰 जम्मा रकम</td>
+            <td>रू ${totalAmount}</td>
+          </tr>`;
+      }).catch(err => {
+        tbody.innerHTML = `<tr><td colspan="7" style="text-align:center; color:#c00;">त्रुटि: ${err.message}</td></tr>`;
+      });
+  }
+
+  // Print receipt popup
+  function printReceipt(name, month, amount, payer, date) {
+    const html = `<html><body style="font-family: 'Segoe UI', sans-serif; padding: 20px;">
+      <h2>MyTuition शुल्क रसिद</h2><hr>
+      विद्यार्थी: ${name}<br>
+      महिना: ${month}<br>
+      रकम: रू ${amount}<br>
+      तिर्ने व्यक्ति: ${payer}<br>
+      मिति: ${date}<br><hr>
+      धन्यवाद!
+    </body></html>`;
+    const win = window.open('', '_blank', 'width=400,height=600');
+    win.document.write(html);
+    win.document.close();
+    win.focus();
+    win.print();
+    win.close();
+  }
+</script>
+
+</body>
+</html>

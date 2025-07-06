@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="ne">
+<head>
+  <meta charset="UTF-8" />
+  <title>📅 विद्यार्थी उपस्थिति - MyTuition</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      padding: 20px;
+      background: linear-gradient(135deg, #e0f7fa, #fff3e0);
+      color: #333;
+    }
+    h2 {
+      text-align: center;
+      margin-bottom: 15px;
+      font-size: 30px;
+      color: #2d2d2d;
+    }
+    .back-btn-container {
+      text-align: center;
+      margin-bottom: 25px;
+    }
+    .back-btn-container a {
+      display: inline-block;
+      padding: 12px 30px;
+      background: linear-gradient(to right, #009688, #4caf50);
+      color: white;
+      border-radius: 12px;
+      font-size: 16px;
+      font-weight: bold;
+      text-decoration: none;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+      transition: transform 0.3s ease;
+    }
+    .back-btn-container a:hover {
+      transform: scale(1.05);
+    }
+    .tabs {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-bottom: 30px;
+    }
+    .tabs button {
+      padding: 12px 24px;
+      background: linear-gradient(to right, #7b1fa2, #e91e63);
+      color: #fff;
+      border: none;
+      border-radius: 10px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+      font-size: 15px;
+    }
+    .tabs button:hover {
+      transform: scale(1.05);
+      background: linear-gradient(to right, #6a1b9a, #d81b60);
+    }
+    .tabs button.active {
+      background: linear-gradient(to right, #2196f3, #00bcd4);
+      color: white;
+    }
+    .tab-content {
+      display: none;
+      background: #ffffff;
+      padding: 25px;
+      border-radius: 15px;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+      max-width: 950px;
+      margin: auto;
+      margin-bottom: 40px;
+    }
+    .tab-content.active {
+      display: block;
+    }
+    table {
+      width: 100%;
+      border-collapse: separate;
+      border-spacing: 0;
+      margin-top: 20px;
+      border-radius: 12px;
+      overflow: hidden;
+    }
+    th {
+      background-color: #3f51b5;
+      color: #fff;
+      padding: 14px;
+      font-size: 16px;
+    }
+    td {
+      background-color: #f9f9f9;
+      padding: 12px;
+      text-align: center;
+      border-bottom: 1px solid #ddd;
+      font-size: 15px;
+    }
+    tr:hover td {
+      background-color: #f1f8e9;
+    }
+    input[type="text"], select {
+      padding: 10px;
+      width: 220px;
+      margin: 5px 10px 10px 0;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      font-size: 15px;
+      transition: 0.3s;
+    }
+    input[type="text"]:focus, select:focus {
+      outline: none;
+      border-color: #42a5f5;
+    }
+    .btn, .print-btn, .delete-btn {
+      padding: 10px 16px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      margin: 5px;
+      font-size: 15px;
+      font-weight: bold;
+      transition: all 0.3s ease;
+    }
+    .btn {
+      background: linear-gradient(to right, #00c853, #64dd17);
+      color: white;
+    }
+    .btn:hover {
+      background: linear-gradient(to right, #00bfa5, #1de9b6);
+    }
+    .print-btn {
+      background: linear-gradient(to right, #ff6f00, #ffca28);
+      color: white;
+    }
+    .print-btn:hover {
+      background: linear-gradient(to right, #f57c00, #fbc02d);
+    }
+    .delete-btn {
+      background: linear-gradient(to right, #d32f2f, #f44336);
+      color: white;
+    }
+    .delete-btn:hover {
+      background: linear-gradient(to right, #b71c1c, #e53935);
+    }
+    #notificationBox {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background: #66bb6a;
+      color: white;
+      padding: 15px 25px;
+      border-radius: 12px;
+      box-shadow: 0 0 15px rgba(0,0,0,0.2);
+      font-weight: bold;
+      display: none;
+      z-index: 1000;
+      font-size: 16px;
+    }
+  </style>
+</head>
+<body>
+  <h2>📅 विद्यार्थी उपस्थिति प्रणाली</h2>
+
+  <!-- Dashboard Back Button -->
+  <div class="back-btn-container">
+    <a href="dashboard.html">🏠 ड्यासबोर्डमा फर्कनुहोस्</a>
+  </div>
+
+  <div class="tabs">
+    <button class="active" onclick="showTab('markTab', event)">➕ आजको उपस्थिति</button>
+    <button onclick="showTab('listTab', event)">📋 मिति अनुसार उपस्थिति</button>
+    <button onclick="showTab('studentReportTab', event)">👤 विद्यार्थी अनुसार रिपोर्ट</button>
+    <button onclick="showTab('summaryTab', event)">📊 विद्यार्थी उपस्थिति सारांश</button>
+  </div>
+
+  <!-- Tab 1 -->
+  <div id="markTab" class="tab-content active">
+    <label>मिति (B.S.):</label>
+    <input type="text" id="attendanceDate" placeholder="2081-03-18" />
+    <table id="attendanceTable">
+      <thead><tr><th>नाम</th><th>स्थिति</th></tr></thead>
+      <tbody></tbody>
+    </table>
+    <button class="btn" onclick="submitAttendance()">✅ सेभ गर्नुहोस्</button>
+  </div>
+
+  <!-- Tab 2 -->
+  <div id="listTab" class="tab-content">
+    <input type="text" id="searchDate" placeholder="📅 मिति लेख्नुहोस् eg: 2081-03-18" />
+    <button class="btn" onclick="loadAttendanceList()">🔍 खोज्नुहोस्</button>
+    <button class="print-btn" onclick="printSection('listBody')">🖨️ Print</button>
+    <table><thead><tr><th>नाम</th><th>स्थिति</th><th>✏️ Edit</th><th>🗑️ Delete</th></tr></thead><tbody id="listBody"></tbody></table>
+  </div>
+
+  <!-- Tab 3 -->
+  <div id="studentReportTab" class="tab-content">
+    <label>विद्यार्थी छान्नुहोस्:</label>
+    <select id="studentSelect"></select><br/><br/>
+    <label>Filter:</label>
+    <select id="filterType" onchange="updateDateInput()">
+      <option value="day">दिन</option>
+      <option value="month">महिना</option>
+      <option value="year">वर्ष</option>
+    </select><br/><br/>
+    <label id="dateLabel">मिति:</label>
+    <input type="text" id="dateInput" placeholder="2081-03-18" />
+    <button class="btn" onclick="loadAttendanceByStudent()">हेर्नुहोस्</button>
+    <table id="studentAttendanceTable"><thead><tr><th>मिति</th><th>स्थिति</th></tr></thead><tbody></tbody></table>
+  </div>
+
+  <!-- Tab 4 -->
+  <div id="summaryTab" class="tab-content">
+    <h3>विद्यार्थी अनुसार कुल उपस्थिति र अनुपस्थिति</h3>
+    <button class="btn" onclick="loadAttendanceSummary()">🔄 Refresh</button>
+    <button class="print-btn" onclick="printSection('summaryTable')">🖨️ Print</button>
+    <table id="summaryTable"><thead><tr><th>नाम</th><th>उपस्थित</th><th>अनुपस्थित</th></tr></thead><tbody></tbody></table>
+  </div>
+
+  <div id="notificationBox"></div>
+
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/10.5.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.5.0/firebase-firestore-compat.js"></script>
+
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyCfW5RGnApAZLhsjVkkphsdG9moIj44ugU",
+      authDomain: "mytuition-e48a3.firebaseapp.com",
+      projectId: "mytuition-e48a3",
+      storageBucket: "mytuition-e48a3.appspot.com",
+      messagingSenderId: "278641988463",
+      appId: "1:278641988463:web:e43309b072c7287a968e9a"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+
+    function showTab(id, event) {
+      document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
+      document.querySelectorAll('.tabs button').forEach(btn => btn.classList.remove('active'));
+      document.getElementById(id).classList.add('active');
+      event.target.classList.add('active');
+    }
+
+    async function loadStudents() {
+      const tbody = document.querySelector("#attendanceTable tbody");
+      tbody.innerHTML = "";
+      const studentSelect = document.getElementById("studentSelect");
+      studentSelect.innerHTML = "";
+      const snapshot = await db.collection("students").get();
+      snapshot.forEach(doc => {
+        const s = doc.data();
+        tbody.innerHTML += `<tr><td>${s.fullName}</td><td><select data-id="${doc.id}"><option value="present">✅ Present</option><option value="absent">❌ Absent</option></select></td></tr>`;
+        studentSelect.innerHTML += `<option value="${doc.id}">${s.fullName}</option>`;
+      });
+    }
+    loadStudents();
+
+    function showNotification(msg) {
+      const box = document.getElementById("notificationBox");
+      box.textContent = msg;
+      box.style.display = "block";
+      setTimeout(() => { box.style.display = "none"; }, 3000);
+    }
+
+    async function submitAttendance() {
+      const date = document.getElementById("attendanceDate").value.trim();
+      if (!date) return alert("मिति लेख्नुहोस्");
+      const selects = document.querySelectorAll("#attendanceTable select");
+      const batch = db.batch();
+      selects.forEach(select => {
+        const studentId = select.getAttribute("data-id");
+        const status = select.value;
+        const ref = db.collection("attendance").doc();
+        batch.set(ref, { studentId, date, status });
+      });
+      await batch.commit();
+      showNotification("✅ उपस्थिति सेभ भयो");
+    }
+
+    async function loadAttendanceList() {
+      const date = document.getElementById("searchDate").value.trim();
+      if (!date) return alert("मिति चाहिन्छ");
+      const tbody = document.getElementById("listBody");
+      tbody.innerHTML = "";
+      const aSnap = await db.collection("attendance").where("date", "==", date).get();
+      const studentIds = aSnap.docs.map(doc => doc.data().studentId);
+      const sSnap = await db.collection("students").where(firebase.firestore.FieldPath.documentId(), "in", studentIds).get();
+      const sData = {}; sSnap.forEach(doc => sData[doc.id] = doc.data().fullName);
+      aSnap.forEach(doc => {
+        const d = doc.data();
+        tbody.innerHTML += `
+        <tr>
+          <td>${sData[d.studentId] || 'Unknown'}</td>
+          <td><select onchange="updateStatus('${doc.id}', this.value)">
+            <option value="present" ${d.status === "present" ? "selected" : ""}>✅ Present</option>
+            <option value="absent" ${d.status === "absent" ? "selected" : ""}>❌ Absent</option>
+          </select></td>
+          <td><button class="btn" onclick="updateStatus('${doc.id}', this.parentElement.previousElementSibling.querySelector('select').value)">Save</button></td>
+          <td><button class="delete-btn" onclick="deleteAttendance('${doc.id}')">🗑️</button></td>
+        </tr>`;
+      });
+    }
+
+    function updateStatus(id, status) {
+      db.collection("attendance").doc(id).update({ status }).then(() => showNotification("✅ अपडेट भयो"));
+    }
+
+    function deleteAttendance(id) {
+      if (confirm("डाटा मेटाउने हो?")) {
+        db.collection("attendance").doc(id).delete().then(() => {
+          loadAttendanceList();
+          showNotification("❌ डाटा मेटाइयो");
+        });
+      }
+    }
+
+    function printSection(id) {
+      const section = document.getElementById(id);
+      const content = section.tagName === "TABLE" ? section.outerHTML : section.innerHTML;
+      const w = window.open('', '', 'width=700,height=900');
+      w.document.write(`<html><head><title>Print</title><style>table{width:100%;border-collapse:collapse;}th,td{border:1px solid #000;padding:8px;text-align:center;}</style></head><body>${content}</body></html>`);
+      w.document.close();
+      w.print();
+    }
+
+    function updateDateInput() {
+      const type = document.getElementById("filterType").value;
+      const label = document.getElementById("dateLabel");
+      const input = document.getElementById("dateInput");
+      if (type === "day") { label.textContent = "मिति:"; input.placeholder = "2081-03-18"; }
+      else if (type === "month") { label.textContent = "महिना:"; input.placeholder = "2081-03"; }
+      else { label.textContent = "वर्ष:"; input.placeholder = "2081"; }
+    }
+
+    async function loadAttendanceByStudent() {
+      const studentId = document.getElementById("studentSelect").value;
+      const type = document.getElementById("filterType").value;
+      const dateVal = document.getElementById("dateInput").value.trim();
+      if (!dateVal) return alert("मिति लेख्नुहोस्");
+      const tbody = document.querySelector("#studentAttendanceTable tbody");
+      tbody.innerHTML = "";
+      let query = db.collection("attendance").where("studentId", "==", studentId);
+      if (type === "day") query = query.where("date", "==", dateVal);
+      else if (type === "month") query = query.where("date", ">=", dateVal + "-01").where("date", "<=", dateVal + "-32");
+      else query = query.where("date", ">=", dateVal + "-01-01").where("date", "<=", dateVal + "-12-32");
+      const snapshot = await query.get();
+      if (snapshot.empty) {
+        tbody.innerHTML = `<tr><td colspan="2">कुनै डाटा छैन</td></tr>`;
+        return;
+      }
+      snapshot.forEach(doc => {
+        const d = doc.data();
+        tbody.innerHTML += `<tr><td>${d.date}</td><td>${d.status === "present" ? "✅" : "❌"}</td></tr>`;
+      });
+    }
+
+    async function loadAttendanceSummary() {
+      const tbody = document.querySelector("#summaryTable tbody");
+      tbody.innerHTML = "";
+      const sSnap = await db.collection("students").get();
+      const students = {};
+      sSnap.forEach(doc => students[doc.id] = { name: doc.data().fullName, present: 0, absent: 0 });
+      const aSnap = await db.collection("attendance").get();
+      aSnap.forEach(doc => {
+        const d = doc.data();
+        if (students[d.studentId]) {
+          if (d.status === "present") students[d.studentId].present++;
+          else if (d.status === "absent") students[d.studentId].absent++;
+        }
+      });
+      Object.values(students).forEach(s => {
+        tbody.innerHTML += `<tr><td>${s.name}</td><td>${s.present}</td><td>${s.absent}</td></tr>`;
+      });
+    }
+  </script>
+</body>
+</html>
